@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import apiRouter from './router';
 
 // initialize
 const app = express();
@@ -21,6 +22,8 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
+
+app.use('/api', apiRouter);
 
 // START THE SERVER
 // =============================================================================
