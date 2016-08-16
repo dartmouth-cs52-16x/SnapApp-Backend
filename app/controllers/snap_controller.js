@@ -1,3 +1,11 @@
+//  SAMPLE CURL CREATE SNAP
+// curl -X POST -H "Content-Type: application/json" -d '{
+//     "pictureURL": "first post",
+//     "sentFrom": "words",
+//     "sentTo":  "this is a test post"
+// }' "http://localhost:9090/api/snaps"
+
+
 import Snap from '../models/snap_model.js';
 
 const cleanSnaps = (snaps) => {
