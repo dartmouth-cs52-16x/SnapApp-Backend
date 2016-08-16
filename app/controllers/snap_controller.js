@@ -29,8 +29,7 @@ export const createSnap = (req, res) => {
 };
 
 export const getSnaps = (req, res) => {
-  res.send('snaps received here');
-  Snap.find().sort({ createdAt: -1 })
+  Snap.find()
     .then((snaps) => {
       res.json(cleanSnaps(snaps));
     })
