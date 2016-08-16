@@ -14,6 +14,10 @@ const cleanSnaps = (snaps) => {
   });
 };
 
+const cleanSnap = (snap) => {
+  return { id: snap._id, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
+};
+
 export const createSnap = (req, res) => {
   const snap = new Snap();
   snap.pictureURL = req.body.pictureURL;
@@ -50,5 +54,12 @@ export const deleteSnap = (req, res) => {
 };
 
 export const getSnap = (req, res) => {
-  res.send('get one snap here');
+  Snap.findById({ _id: req.params.id })
+    .then(snap => {
+      res.json(cleanSnap(snap));
+      console.log(snap);
+    })
+  .catch(error => {
+    res.json({ error });
+  });
 };
