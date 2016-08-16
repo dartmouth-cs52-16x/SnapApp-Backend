@@ -7,11 +7,11 @@ const cleanSnaps = (snaps) => {
 };
 
 export const createSnap = (req, res) => {
-  res.send('snaps should be created here');
   const snap = new Snap();
-  snap.pictureURLs = req.body.pictureURL;
+  snap.pictureURL = req.body.pictureURL;
   snap.sentFrom = req.body.sentFrom;
   snap.sentTo = req.body.sentTo;
+  console.log(req.body);
   snap.save()
     .then((result) => {
       res.json({ message: 'Snap Created' });

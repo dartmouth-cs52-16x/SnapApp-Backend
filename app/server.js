@@ -16,14 +16,13 @@ app.use(bodyParser.json());
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
+app.use('/api', apiRouter);
 
 
 // default index route
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('Hello World!');
 });
-
-app.use('/api', apiRouter);
 
 // START THE SERVER
 // =============================================================================
@@ -33,7 +32,7 @@ app.listen(port);
 console.log(`listening on: ${port}`);
 
 // DB Setup
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/blog';
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/SnapApp';
 mongoose.connect(mongoURI);
 // set mongoose promises to es6 default
 mongoose.Promise = global.Promise;

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-// create a schema for posts with a field
+// create a schema for snaps with fields
 const SnapSchema = new Schema({
   pictureURL: String,
   sentFrom: String,
@@ -8,6 +8,6 @@ const SnapSchema = new Schema({
 });
 
 // create model class
-const SnapModel = mongoose.model('User', SnapSchema);
+const SnapModel = mongoose.model('Snap', SnapSchema);
 
 export default SnapModel;

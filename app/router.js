@@ -8,14 +8,12 @@ router.get('/', (req, res) => {
   res.json({ message: 'welcome to our snap api!' });
 });
 
-router.route('/snaps')
-  .get(Snaps.getSnaps)
-  .post(Snaps.createSnap);
-
 router.route('/snaps/:id')
     .get(Snaps.getSnap)
     .delete(Snaps.deleteSnap);
 
-// /your routes will go here
+router.route('/snaps')
+  .post(Snaps.createSnap)
+  .get(Snaps.getSnaps);
 
 export default router;
