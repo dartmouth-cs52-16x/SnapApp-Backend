@@ -16,6 +16,7 @@ const cleanSnaps = (snaps) => {
 
 export const createSnap = (req, res) => {
   const snap = new Snap();
+
   snap.pictureURL = req.body.pictureURL;
   snap.sentFrom = req.body.sentFrom;
   snap.sentTo = req.body.sentTo;
