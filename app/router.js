@@ -1,7 +1,7 @@
 import { Router } from 'express';
+// import * as UserController from './controllers/user_controller';
 import * as Snaps from './controllers/snap_controller.js';
-import UserController from './controllers/user_controller.js';
-
+// import { requireAuth, requireSignin } from './services/passport.js';
 
 const router = Router();
 
@@ -17,9 +17,7 @@ router.route('/snaps')
   .post(Snaps.createSnap)
   .get(Snaps.getSnaps);
 
-
 // router.post('/signin', requireSignin, UserController.signin);
 // router.post('/signup', UserController.signup);
-
 
 export default router;

@@ -7,6 +7,8 @@
 
 
 import Snap from '../models/snap_model.js';
+// import fs from 'file-system';
+import fs from 'fs';
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
@@ -18,12 +20,27 @@ const cleanSnap = (snap) => {
   return { id: snap._id, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
 };
 
+
 export const createSnap = (req, res) => {
   const snap = new Snap();
+
+  // res.writeHead(200, {
+  //   'Content-Type': 'text/html',
+  // });
 
   snap.pictureURL = req.body.pictureURL;
   snap.sentFrom = req.body.sentFrom;
   snap.sentTo = req.body.sentTo;
+  // snap.img.data = fs.readFileSync(req.body.pictureURL);
+  snap.img.contentType = 'image/jpeg';
+
+  // fs.readFile('../background.jpeg', 'utf8', (err, data) => {
+  //   if (err) throw err;
+  //   snap.img.data = data;
+  //   res.write(data);
+  //   res.end();
+  // });
+
   console.log(req.body);
   snap.save()
     .then((result) => {
@@ -52,6 +69,12 @@ export const deleteSnap = (req, res) => {
     .catch((error) => {
       res.json({ error });
     });
+};
+
+export const storeImage = (req, res) => {
+  const snap = new Snap();
+  snap.img.data = fs.readFileSync(req);
+  snap.img.contentType = 'image/jpeg';
 };
 
 export const getSnap = (req, res) => {

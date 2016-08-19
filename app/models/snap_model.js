@@ -5,6 +5,9 @@ const SnapSchema = new Schema({
   pictureURL: String,
   sentFrom: String,
   sentTo: String,
+  img: { data: Buffer, contentType: String },
+  time: Date,
+
 });
 
 // create model class
