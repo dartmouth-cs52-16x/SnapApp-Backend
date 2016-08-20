@@ -12,7 +12,7 @@ app.use(cors());
 
 // enable json message body for posting data to API
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '8mb' }));
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/s3', require('react-s3-uploader/s3router')({
-  bucket: 'MyS3Bucket',
+  bucket: 'snap-app-bucket',
   region: 'us-east-1', // optional
   signatureVersion: 'v4', // optional (use for some amazon regions: frankfurt and others)
   headers: { 'Access-Control-Allow-Origin': '*' }, // optional

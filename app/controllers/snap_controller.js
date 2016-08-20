@@ -9,7 +9,6 @@
 import Snap from '../models/snap_model.js';
 // import fs from 'file-system';
 const fs = require('fs');
-const zlib = require('zlib');
 const AWS = require('aws-sdk');
 
 const cleanSnaps = (snaps) => {
@@ -24,15 +23,16 @@ const cleanSnap = (snap) => {
 
 
 export const createSnap = (req, res) => {
-  // console.log(req.body);
+  const snap = new Snap();
 
-  // const body = fs.createReadStream('test').pipe(zlib.createGzip());
-  // const s3obj = new AWS.S3({ params: { Bucket: 'snap-app-buckets', Key: 'new' } });
+  const x = Math.floor((Math.random() * 10000) + 1);
+  snap.key = x.toString();
+  console.log(req.body);
 
-  const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-buckets' } });
+  const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-bucket' } });
 
   AWS.config.update({ region: 'us-west-2' });
-  const params = { Key: 'newer', Body: req.body.file };
+  const params = { Body: req.body.file, ContentType: 'text/plain', Key: x.toString() };
   s3bucket.upload(params, (err, data) => {
     if (err) {
       console.log('Error uploading data: ', err);
@@ -40,6 +40,27 @@ export const createSnap = (req, res) => {
       console.log('Successfully uploaded data to myBucket/myKey');
     }
   });
+
+  snap.sentFrom = req.body.sentFrom;
+  snap.sentTo = req.body.sentTo;
+
+  var s3 = new AWS.S3();//eslint-disable-line
+
+
+  var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
+  s3.getSignedUrl('getObject', paramsTwo, (err, url) => {
+    snap.pictureURL = url;
+    console.log('The URL is', url);
+  });
+
+  console.log('\n');
+
+  snap.save()
+    .then((result) => {
+      res.json({ message: 'Snap Created' });
+    }).catch((error) => {
+      res.json({ error });
+    });
 
   // s3bucket.createBucket(() => {
   //   const params = { Key: 'new', Body: 'HIIIII!' };
@@ -72,21 +93,6 @@ export const createSnap = (req, res) => {
   // s3.upload(paramss, (err, data) => {
   //   console.log(err, data);
   // });
-
-  const snap = new Snap();
-
-  snap.pictureURL = req.body.pictureURL;
-  snap.sentFrom = req.body.sentFrom;
-  snap.sentTo = req.body.sentTo;
-  snap.img.data = req.body.img;
-  snap.img.contentType = 'image/jpeg';
-
-  snap.save()
-    .then((result) => {
-      res.json({ message: 'Snap Created' });
-    }).catch((error) => {
-      res.json({ error });
-    });
 };
 
 export const getSnaps = (req, res) => {
@@ -120,7 +126,29 @@ export const getSnap = (req, res) => {
   Snap.findById({ _id: req.params.id })
     .then(snap => {
       res.json(cleanSnap(snap));
-      console.log(snap);
+      // console.log(snap);
+      // var s3 = new AWS.S3();//eslint-disable-line
+      //
+      // var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
+      //
+      // var paarams = { //eslint-disable-line
+      //   Bucket: 'snap-app-bucket', /* required */
+      // };
+      // s3.listObjects(paarams, (err, data) => {
+      //   if (err) console.log(err, err.stack); // an error occurred
+      //   else console.log('OBJECT DATA', data);           // successful response
+      // });
+      //
+      // console.log('/n');
+      // console.log('/n');
+      // console.log('/n');
+      //
+      // s3.getObject(paramsTwo, (err, data) => {
+      //   if (err) console.log(err, err.stack); // an error occurred
+      //   else {
+      //     // console.log(data.Body.toString());           // successful response
+      //   }
+      // });
     })
   .catch(error => {
     res.json({ error });
