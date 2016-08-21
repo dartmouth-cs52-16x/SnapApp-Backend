@@ -10,6 +10,7 @@ import Snap from '../models/snap_model.js';
 // import fs from 'file-system';
 const fs = require('fs');
 const AWS = require('aws-sdk');
+const url = require('url');
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
@@ -23,11 +24,11 @@ const cleanSnap = (snap) => {
 
 
 export const createSnap = (req, res) => {
+  console.log('CREATE SNAP BODY', req.body);
   const snap = new Snap();
 
   const x = Math.floor((Math.random() * 10000) + 1);
   snap.key = x.toString();
-  console.log(req.body);
 
   const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-bucket' } });
 
@@ -48,9 +49,9 @@ export const createSnap = (req, res) => {
 
 
   var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
-  s3.getSignedUrl('getObject', paramsTwo, (err, url) => {
-    snap.pictureURL = url;
-    console.log('The URL is', url);
+  s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
+    snap.pictureURL = Url;
+    console.log('The URL is', Url);
   });
 
   console.log('\n');
@@ -96,7 +97,10 @@ export const createSnap = (req, res) => {
 };
 
 export const getSnaps = (req, res) => {
-  Snap.find()
+  // const urlParts = url.parse(req.url, true);
+  // console.log('URL PARTS QUERY', urlParts.query);
+  console.log('GETSNAPS QUERY', req.user.email);
+  Snap.find({ sentTo: req.user.email })
     .then((snaps) => {
       res.json(cleanSnaps(snaps));
     })

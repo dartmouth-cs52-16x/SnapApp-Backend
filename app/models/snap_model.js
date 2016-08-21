@@ -7,7 +7,6 @@ const SnapSchema = new Schema({
   sentTo: String,
   time: Date,
   key: String,
-
 });
 
 // create model class
