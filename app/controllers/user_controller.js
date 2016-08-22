@@ -12,6 +12,21 @@ export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
 
+export const getUserObject = (req, res) => {
+  // const urlParts = url.parse(req.url, true);
+  // console.log('URL PARTS QUERY', urlParts.query);
+  console.log('USER OBJECT', req.user);
+
+  res.send(req.user);
+  // Snap.find({ sentTo: req.user.email })
+  //   .then((snaps) => {
+  //     res.json(cleanSnaps(snaps));
+  //   })
+  //   .catch((error) => {
+  //     res.json({ error });
+  //   });
+};
+
 // encodes a new token for a user object
 function tokenForUser(user) {
   const timestamp = new Date().getTime();

@@ -10,7 +10,7 @@ import Snap from '../models/snap_model.js';
 // import fs from 'file-system';
 const fs = require('fs');
 const AWS = require('aws-sdk');
-const url = require('url');
+
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
