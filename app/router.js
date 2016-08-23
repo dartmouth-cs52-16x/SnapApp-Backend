@@ -14,6 +14,7 @@ router.route('/snaps/:id')
   .delete(requireAuth, Snaps.deleteSnap);
 
 router.route('/profile')
+  .put(requireAuth, UserController.updateUserProfile)
   .get(requireAuth, UserController.getUserObject);
 
 router.route('/user')
