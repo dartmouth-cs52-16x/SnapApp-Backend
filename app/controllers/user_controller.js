@@ -12,8 +12,25 @@ export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
 
+export const checkUserExists = (req, res) => {
+  User.findOne({ username: req.body.sentTo })
+    .then((user) => {
+      if (user) {
+        res.json({ success: 'user exists' });
+        if (user.username) {
+          console.log('\nUSER FOUND succes\n');
+          console.log(user);
+        } else {
+          console.log('\nUSER NOT FOUND object: \n', user);
+        }
+      }
+    }).catch((error) => {
+      console.log('NO USER', error);
+      res.json({ error });
+    });
+};
+
 export const getUserObject = (req, res) => {
-  console.log('USER OBJECT', req.user);
   res.send(req.user);
 };
 
