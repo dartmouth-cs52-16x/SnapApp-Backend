@@ -2,6 +2,7 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import FacebookStrategy from 'passport-facebook';
 
 // and import User and your config with the secret
 import User from '../models/user_model';
@@ -18,6 +19,12 @@ const localOptions = { usernameField: 'email' };
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: process.env.API_SECRET,
+};
+
+const facebookOptions = {
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: 'http://localhost:8080/auth/facebook/callback',
 };
 
 
@@ -58,9 +65,18 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   });
 });
 
+const facebookLogin = new FacebookStrategy(facebookOptions, (accessToken, refreshToken, profile, cb) => {
+  User.findOrCreate({ facebookId: profile.id }, (err, user) => {
+    return cb(err, user);
+  });
+});
+
+
 // Tell passport to use this strategy
 passport.use(jwtLogin);
 passport.use(localLogin);
+passport.use(facebookLogin);
 
 export const requireAuth = passport.authenticate('jwt', { session: false });
 export const requireSignin = passport.authenticate('local', { session: false });
+export const requireFBAuth = passport.authenticate('facebook', { session: false });
