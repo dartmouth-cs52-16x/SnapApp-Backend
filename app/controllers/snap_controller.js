@@ -24,32 +24,17 @@ const cleanSnap = (snap) => {
 
 
 export const createSnap = (req, res) => {
-  User.find({ sentTo: req.body.sentTo })
-    .then((user) => {
-      if (user) {
-        res.json({ success: 'user exists' });
-        if (user) {
-          console.log('\nUSER FOUND succes\n');
-        }
-        console.log('\nUSER NOT FOUND \n');
-      }
-    }).catch((error) => {
-      res.json({ error });
-    });
-
   //  update users snap score for every snap sent
   User.findOneAndUpdate({ _id: req.user._id }, {
     snapScore: req.user.snapScore + 1,
     friends: ['asdf', 'asdfasdf'],
   }).then(() => {
-    res.send({ message: 'Successfully updated post!' });
+    // res.send({ message: 'Successfully updated post!' });
   })
   .catch(error => {
     res.json({ error });
   });
 
-
-  console.log('CREATE SNAP BODY', req.body);
   const snap = new Snap();
 
   const x = Math.floor((Math.random() * 10000) + 1);
@@ -62,8 +47,6 @@ export const createSnap = (req, res) => {
   s3bucket.upload(params, (err, data) => {
     if (err) {
       console.log('Error uploading data: ', err);
-    } else {
-      console.log('Successfully uploaded data to myBucket/myKey');
     }
   });
 
@@ -76,12 +59,11 @@ export const createSnap = (req, res) => {
   var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
   s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
     snap.pictureURL = Url;
-    console.log('The URL is', Url);
   });
 
   snap.save()
     .then((result) => {
-      res.json({ message: 'Snap Created' });
+      // res.json({ message: 'Snap Created' });
     }).catch((error) => {
       res.json({ error });
     });
@@ -122,7 +104,6 @@ export const createSnap = (req, res) => {
 export const getSnaps = (req, res) => {
   // const urlParts = url.parse(req.url, true);
   // console.log('URL PARTS QUERY', urlParts.query);
-  console.log('GETSNAPS QUERY', req.user.email);
   Snap.find({ sentTo: req.user.email })
     .then((snaps) => {
       res.json(cleanSnaps(snaps));
