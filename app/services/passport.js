@@ -11,7 +11,7 @@ dotenv.config({ silent: true });
 
 // options for local strategy, we'll use email AS the username
 // not have separate ones
-const localOptions = { usernameField: 'email' };
+const localOptions = { usernameField: 'username' };
 
 // options for jwt strategy
 // we'll pass in the jwt in an `authorization` header
@@ -28,11 +28,11 @@ const facebookOptions = {
 };
 
 
-const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+const localLogin = new LocalStrategy(localOptions, (username, password, done) => {
   // Verify this email and password, call done with the user
   // if it is the correct email and password
   // otherwise, call done with false
-  User.findOne({ email }, (err, user) => { // eslint-disable-line consistent-return
+  User.findOne({ username }, (err, user) => { // eslint-disable-line consistent-return
     if (err) { return done(err); }
 
     if (!user) { return done(null, false); }

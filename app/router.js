@@ -11,14 +11,18 @@ router.get('/', (req, res) => {
 });
 
 router.route('/snaps/:id')
-  .get(Snaps.getSnap)
-  .delete(Snaps.deleteSnap);
+  .get(requireAuth, Snaps.getSnap)
+  .delete(requireAuth, Snaps.deleteSnap);
 
 router.route('/profile')
-  .get(UserController.getUserObject);
+  .get(requireAuth, UserController.getUserObject);
+
+router.route('/user')
+  .get(UserController.checkUserExists);
+
 
 router.route('/snaps')
-  .post(Snaps.createSnap)
+  .post(requireAuth, Snaps.createSnap)
   .get(requireAuth, Snaps.getSnaps);
 
 router.post('/signin', requireSignin, UserController.signin);

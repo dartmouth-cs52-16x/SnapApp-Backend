@@ -15,19 +15,26 @@ export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
 
-export const getUserObject = (req, res) => {
-  // const urlParts = url.parse(req.url, true);
-  // console.log('URL PARTS QUERY', urlParts.query);
-  console.log('USER OBJECT', req.user);
+export const checkUserExists = (req, res) => {
+  console.log(req.body);
+  User.findOne({ username: req.body.sentTo })
+    .then((user) => {
+      if (user) {
+        res.json({ success: 'user exists' });
+        if (user.username) {
+          res.send({ success: 'USER EXISTS' });
+        } else {
+          res.send({ error: 'USER DOESN\'T EXIST' });
+        }
+      }
+    }).catch((error) => {
+      res.json({ error });
+      res.send({ error: 'call failed' });
+    });
+};
 
+export const getUserObject = (req, res) => {
   res.send(req.user);
-  // Snap.find({ sentTo: req.user.email })
-  //   .then((snaps) => {
-  //     res.json(cleanSnaps(snaps));
-  //   })
-  //   .catch((error) => {
-  //     res.json({ error });
-  //   });
 };
 
 // encodes a new token for a user object
@@ -52,7 +59,7 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
   // this is similar to how you created a Post
   // and then return a token same as you did in in signin
 
-  User.findOne({ email })
+  User.findOne({ username })
     .then((user) => { // eslint-disable-line consistent-return
       if (user) {
         return res.status(422).send('The password or email or username you entered has been taken!');
@@ -62,6 +69,10 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
         newUser.email = email;
         newUser.password = password;
         newUser.username = username;
+        newUser.snapScore = 0;
+        newUser.topFriend = 'NONE';
+        newUser.friends = [];
+        newUser.groups = [[]];
         newUser.save()
           .then((result) => {
             res.send({ token: tokenForUser(result) });
