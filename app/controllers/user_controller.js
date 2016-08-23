@@ -13,20 +13,20 @@ export const signin = (req, res, next) => {
 };
 
 export const checkUserExists = (req, res) => {
+  console.log(req.body);
   User.findOne({ username: req.body.sentTo })
     .then((user) => {
       if (user) {
         res.json({ success: 'user exists' });
         if (user.username) {
-          console.log('\nUSER FOUND succes\n');
-          console.log(user);
+          res.send({ success: 'USER EXISTS' });
         } else {
-          console.log('\nUSER NOT FOUND object: \n', user);
+          res.send({ error: 'USER DOESN\'T EXIST' });
         }
       }
     }).catch((error) => {
-      console.log('NO USER', error);
       res.json({ error });
+      res.send({ error: 'call failed' });
     });
 };
 
@@ -56,7 +56,7 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
   // this is similar to how you created a Post
   // and then return a token same as you did in in signin
 
-  User.findOne({ email })
+  User.findOne({ username })
     .then((user) => { // eslint-disable-line consistent-return
       if (user) {
         return res.status(422).send('The password or email or username you entered has been taken!');

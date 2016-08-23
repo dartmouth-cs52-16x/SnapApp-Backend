@@ -10,11 +10,15 @@ router.get('/', (req, res) => {
 });
 
 router.route('/snaps/:id')
-  .get(Snaps.getSnap)
-  .delete(Snaps.deleteSnap);
+  .get(requireAuth, Snaps.getSnap)
+  .delete(requireAuth, Snaps.deleteSnap);
 
 router.route('/profile')
   .get(requireAuth, UserController.getUserObject);
+
+router.route('/user')
+  .get(UserController.checkUserExists);
+
 
 router.route('/snaps')
   .post(requireAuth, Snaps.createSnap)
