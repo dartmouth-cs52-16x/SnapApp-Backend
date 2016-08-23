@@ -2,6 +2,7 @@
 
 import User from '../models/user_model';
 import jwt from 'jwt-simple';
+const AWS = require('aws-sdk');
 // import config from '../config';
 import dotenv from 'dotenv';
 dotenv.config({ silent: true });
@@ -10,6 +11,45 @@ dotenv.config({ silent: true });
 export const signin = (req, res, next) => {
   console.log('sign in started');
   res.send({ token: tokenForUser(req.user) });
+};
+
+//  need body, email, username, id, file
+export const updateUserProfile = (req, res) => {
+  console.log('UPDATE REQ:', req.body);
+
+  const x = Math.floor((Math.random() * 100000) + 1);
+  const key = x.toString();
+
+  console.log('KEY GENERATED', key);
+
+  const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-bucket' } });
+
+  AWS.config.update({ region: 'us-west-2' });
+  const params = { Body: req.body.file, ContentType: 'text/plain', Key: key, ACL: 'public-read' };
+  s3bucket.upload(params, (err, data) => {
+    if (err) {
+      console.log('Error uploading data: ', err);
+    }
+    var s3 = new AWS.S3();//eslint-disable-line
+    var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
+    s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
+      if (err) {
+        console.log('Error getting prof url: ', err);
+      }
+      console.log('GOT URL', Url);
+      User.findOneAndUpdate({ _id: req.body.id }, {
+        email: req.body.email,
+        profilePicURL: Url,
+        profilePicKey: key,
+        username: req.body.username,
+      }).then(() => {
+        res.send({ message: 'Successfully updated post!' });
+      })
+      .catch(error => {
+        res.json({ error });
+      });
+    });
+  });
 };
 
 export const checkUserExists = (req, res) => {
@@ -69,7 +109,8 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
         newUser.snapScore = 0;
         newUser.topFriend = 'NONE';
         newUser.friends = [];
-        newUser.groups = [[]];
+        newUser.profilePicKey = '';
+        newUser.profilePicURL = '';
         newUser.save()
           .then((result) => {
             res.send({ token: tokenForUser(result) });

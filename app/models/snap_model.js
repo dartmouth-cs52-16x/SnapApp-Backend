@@ -6,6 +6,7 @@ const SnapSchema = new Schema({
   sentFrom: String,
   sentTo: String,
   time: Date,
+  timer: Number,
   key: String,
   timer: Number,
 });
