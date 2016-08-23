@@ -14,12 +14,12 @@ const AWS = require('aws-sdk');
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
-    return { id: snap._id, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
+    return { id: snap._id, timer: snap.timer, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
   });
 };
 
 const cleanSnap = (snap) => {
-  return { id: snap._id, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
+  return { id: snap._id, timer: snap.timer, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
 };
 
 
@@ -97,6 +97,8 @@ export const createSnap = (req, res) => {
 
   snap.sentFrom = req.body.sentFrom;
   snap.sentTo = req.body.sentTo;
+  snap.timer = req.body.timer;
+  console.log(`timer is ${snap.timer}`);
 
   var s3 = new AWS.S3();//eslint-disable-line
 
