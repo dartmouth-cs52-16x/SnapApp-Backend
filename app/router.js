@@ -14,10 +14,10 @@ router.route('/snaps/:id')
   .delete(Snaps.deleteSnap);
 
 router.route('/profile')
-  .get(UserController.getUserObject);
+  .get(requireAuth, UserController.getUserObject);
 
 router.route('/snaps')
-  .post(Snaps.createSnap)
+  .post(requireAuth, Snaps.createSnap)
   .get(requireAuth, Snaps.getSnaps);
 
 router.post('/signin', requireSignin, UserController.signin);

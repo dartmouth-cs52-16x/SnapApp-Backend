@@ -5,7 +5,7 @@
 //     "sentTo":  "this is a test post"
 // }' "http://localhost:9090/api/snaps"
 
-
+import User from '../models/user_model.js';
 import Snap from '../models/snap_model.js';
 // import fs from 'file-system';
 const fs = require('fs');
@@ -24,6 +24,31 @@ const cleanSnap = (snap) => {
 
 
 export const createSnap = (req, res) => {
+  User.find({ sentTo: req.body.sentTo })
+    .then((user) => {
+      if (user) {
+        res.json({ success: 'user exists' });
+        if (user) {
+          console.log('\nUSER FOUND succes\n');
+        }
+        console.log('\nUSER NOT FOUND \n');
+      }
+    }).catch((error) => {
+      res.json({ error });
+    });
+
+  //  update users snap score for every snap sent
+  User.findOneAndUpdate({ _id: req.user._id }, {
+    snapScore: req.user.snapScore + 1,
+    friends: ['asdf', 'asdfasdf'],
+  }).then(() => {
+    res.send({ message: 'Successfully updated post!' });
+  })
+  .catch(error => {
+    res.json({ error });
+  });
+
+
   console.log('CREATE SNAP BODY', req.body);
   const snap = new Snap();
 
@@ -33,7 +58,7 @@ export const createSnap = (req, res) => {
   const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-bucket' } });
 
   AWS.config.update({ region: 'us-west-2' });
-  const params = { Body: req.body.file, ContentType: 'text/plain', Key: x.toString() };
+  const params = { Body: req.body.file, ContentType: 'text/plain', Key: x.toString(), ACL: 'public-read' };
   s3bucket.upload(params, (err, data) => {
     if (err) {
       console.log('Error uploading data: ', err);
@@ -53,8 +78,6 @@ export const createSnap = (req, res) => {
     snap.pictureURL = Url;
     console.log('The URL is', Url);
   });
-
-  console.log('\n');
 
   snap.save()
     .then((result) => {
@@ -127,34 +150,62 @@ export const storeImage = (req, res) => {
 };
 
 export const getSnap = (req, res) => {
+  // Get a new signed URL for the snap
+  console.log('GETTING SNAP');
+  var s3 = new AWS.S3();//eslint-disable-line
+
   Snap.findById({ _id: req.params.id })
     .then(snap => {
-      res.json(cleanSnap(snap));
-      // console.log(snap);
-      // var s3 = new AWS.S3();//eslint-disable-line
-      //
-      // var paramsTwo = { Bucket: 'snap-app-bucket', Key: x.toString() }; //eslint-disable-line
-      //
-      // var paarams = { //eslint-disable-line
-      //   Bucket: 'snap-app-bucket', /* required */
-      // };
-      // s3.listObjects(paarams, (err, data) => {
-      //   if (err) console.log(err, err.stack); // an error occurred
-      //   else console.log('OBJECT DATA', data);           // successful response
-      // });
-      //
-      // console.log('/n');
-      // console.log('/n');
-      // console.log('/n');
-      //
-      // s3.getObject(paramsTwo, (err, data) => {
-      //   if (err) console.log(err, err.stack); // an error occurred
-      //   else {
-      //     // console.log(data.Body.toString());           // successful response
-      //   }
-      // });
+      var paramsTwo = { Bucket: 'snap-app-bucket', Key: snap.key }; //eslint-disable-line
+      s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
+        console.log('\n\nThe new Signed URL is', Url);
+
+        Snap.findOneAndUpdate({ _id: req.params.id }, {
+          pictureURL: Url,
+        }).then(() => {
+          console.log('Updated Snaps URL');
+          Snap.findById({ _id: req.params.id })
+            .then((oneSnap) => {
+              res.json(cleanSnap(oneSnap));
+              console.log('Returned snap with new URL');
+            })
+          .catch(error => {
+            res.json({ error });
+          });
+        })
+        .catch(error => {
+          res.json({ error });
+        });
+      });
     })
   .catch(error => {
     res.json({ error });
   });
+
+  //
+  //
+  // var paramsTwo = { Bucket: 'snap-app-bucket', Key: key }; //eslint-disable-line
+  // s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
+  //   newURL = Url;
+  //   console.log('\n\nThe new Signed URL is', Url);
+  // });
+  //
+  // Snap.findOneAndUpdate({ _id: req.params.id }, {
+  //   pictureURL: newURL,
+  //   friend: ['asdf', 'asdfasdf'],
+  // }).then(() => {
+  //   res.send({ message: 'Successfully updated post!' });
+  // })
+  // .catch(error => {
+  //   res.json({ error });
+  // });
+
+
+  // Snap.findById({ _id: req.params.id })
+  //   .then(snap => {
+  //     res.json(cleanSnap(snap));
+  //   })
+  // .catch(error => {
+  //   res.json({ error });
+  // });
 };

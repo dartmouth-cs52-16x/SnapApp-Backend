@@ -13,18 +13,8 @@ export const signin = (req, res, next) => {
 };
 
 export const getUserObject = (req, res) => {
-  // const urlParts = url.parse(req.url, true);
-  // console.log('URL PARTS QUERY', urlParts.query);
   console.log('USER OBJECT', req.user);
-
   res.send(req.user);
-  // Snap.find({ sentTo: req.user.email })
-  //   .then((snaps) => {
-  //     res.json(cleanSnaps(snaps));
-  //   })
-  //   .catch((error) => {
-  //     res.json({ error });
-  //   });
 };
 
 // encodes a new token for a user object
@@ -59,6 +49,10 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
         newUser.email = email;
         newUser.password = password;
         newUser.username = username;
+        newUser.snapScore = 0;
+        newUser.topFriend = 'NONE';
+        newUser.friends = [];
+        newUser.groups = [[]];
         newUser.save()
           .then((result) => {
             res.send({ token: tokenForUser(result) });

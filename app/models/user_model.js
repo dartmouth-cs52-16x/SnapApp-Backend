@@ -8,6 +8,9 @@ const UserSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
   username: String,
+  friends: [String],
+  topFriend: String,
+  snapScore: Number,
 });
 
 UserSchema.set('toJSON', {
