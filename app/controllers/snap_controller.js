@@ -102,9 +102,10 @@ export const createSnap = (req, res) => {
 };
 
 export const getSnaps = (req, res) => {
+  console.log('users username', req.user);
   // const urlParts = url.parse(req.url, true);
   // console.log('URL PARTS QUERY', urlParts.query);
-  Snap.find({ sentTo: req.user.email })
+  Snap.find({ sentTo: req.user.username })
     .then((snaps) => {
       res.json(cleanSnaps(snaps));
     })

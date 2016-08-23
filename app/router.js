@@ -18,6 +18,7 @@ router.route('/profile')
 
 router.route('/snaps')
   .post(requireAuth, Snaps.createSnap)
+  // .get(requireAuth, UserController.checkUserExists)
   .get(requireAuth, Snaps.getSnaps);
 
 router.post('/signin', requireSignin, UserController.signin);
