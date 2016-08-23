@@ -13,6 +13,7 @@ export const signin = (req, res, next) => {
 };
 
 export const checkUserExists = (req, res) => {
+  console.log(req.body);
   User.findOne({ username: req.body.sentTo })
     .then((user) => {
       if (user) {
@@ -25,6 +26,7 @@ export const checkUserExists = (req, res) => {
       }
     }).catch((error) => {
       res.json({ error });
+      res.send({ error: 'call failed' });
     });
 };
 

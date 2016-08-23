@@ -8,7 +8,7 @@ const UserSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
   username: String,
-  friends: [String],
+  friends: [{ name: String, score: Number }],
   topFriend: String,
   snapScore: Number,
 });

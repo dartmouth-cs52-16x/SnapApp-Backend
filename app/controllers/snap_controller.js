@@ -24,10 +24,55 @@ const cleanSnap = (snap) => {
 
 
 export const createSnap = (req, res) => {
+  // let userExists = 0;
+  // //  check if user exists
+  // User.findOne({ username: req.body.sentTo })
+  //   .then((user) => {
+  //     if (user) {
+  //       res.json({ success: 'user exists' });
+  //       if (user.username) {
+  //         res.send({ success: 'USER EXISTS' });
+  //         userExists = 1;
+  //       } else {
+  //         res.send({ error: 'USER DOESN\'T EXIST' });
+  //       }
+  //     }
+  //   }).catch((error) => {
+  //     res.json({ error });
+  //     res.send({ error: 'call failed' });
+  //   });
+  //
+  // if (userExists) {
+  //   console.log('user exists');
+  // }
+
+
   //  update users snap score for every snap sent
+  const dict = req.user.friends;
+  console.log(dict);
+  if (dict.length === 0) {
+    console.log('DICT EMPTY');
+    dict.push({ name: req.body.sentTo, score: 1 });
+  } else {
+    //  update friends and score for friend
+    // http://stackoverflow.com/questions/7196212/how-to-create-dictionary-and-add-key-value-pairs-dynamically-in-javascript
+    let exists = 0;
+    for (let i = 0; i < dict.length; i++) {
+      if (dict[i].name === req.body.sentTo) {
+        dict[i].score += 1;
+        exists = 1;
+      }
+    }
+    if (exists === 0) {
+      dict.push({ name: req.body.sentTo, score: 1 });
+    }
+  }
+
+  console.log('updated dict', dict);
+
   User.findOneAndUpdate({ _id: req.user._id }, {
     snapScore: req.user.snapScore + 1,
-    friends: ['asdf', 'asdfasdf'],
+    friends: dict,
   }).then(() => {
     // res.send({ message: 'Successfully updated post!' });
   })
@@ -102,7 +147,6 @@ export const createSnap = (req, res) => {
 };
 
 export const getSnaps = (req, res) => {
-  console.log('users username', req.user);
   // const urlParts = url.parse(req.url, true);
   // console.log('URL PARTS QUERY', urlParts.query);
   Snap.find({ sentTo: req.user.username })
