@@ -18,7 +18,7 @@ export const addFriend = (req, res) => {
   User.findOneAndUpdate({ _id: req.user._id }, {
     friends: req.body.friends,
   }).then(() => {
-    res.send({ message: 'Successfully updated post!' });
+    res.send({ message: 'Successfully updated friends!' });
   })
   .catch(error => {
     res.json({ error });
