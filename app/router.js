@@ -18,12 +18,13 @@ router.route('/profile')
   .get(requireAuth, UserController.getUserObject);
 
 router.route('/user')
-  .get(UserController.checkUserExists);
-
+  .get(UserController.checkUserExists)
+  .delete(requireAuth, UserController.deleteUser);
 
 router.route('/snaps')
   .post(requireAuth, Snaps.createSnap)
   .get(requireAuth, Snaps.getSnaps);
+
 
 router.post('/signin', requireSignin, UserController.signin);
 router.post('/signup', UserController.signup);

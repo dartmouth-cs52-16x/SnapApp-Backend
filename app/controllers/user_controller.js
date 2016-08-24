@@ -1,4 +1,4 @@
-//  Sources: http://mongoosejs.com/docs/queries.html
+ //  Sources: http://mongoosejs.com/docs/queries.html
 
 import User from '../models/user_model';
 import jwt from 'jwt-simple';
@@ -11,6 +11,17 @@ dotenv.config({ silent: true });
 export const signin = (req, res, next) => {
   console.log('sign in started');
   res.send({ token: tokenForUser(req.user) });
+};
+
+export const deleteUser = (req, res) => {
+  console.log('DELETE USER ID', req.user._id);
+  User.remove({ _id: req.user._id })
+    .then(() => {
+      res.json({ message: 'Usage successfully deleted!' });
+    })
+    .catch(error => {
+      res.json({ error });
+    });
 };
 
 //  need body, email, username, id, file
