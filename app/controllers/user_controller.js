@@ -7,6 +7,9 @@ const AWS = require('aws-sdk');
 import dotenv from 'dotenv';
 dotenv.config({ silent: true });
 
+// export const fbLogin = (req, res, next) => {
+//   console.log('FB AUTH STARTED');
+// };
 
 export const signin = (req, res, next) => {
   console.log('sign in started');
