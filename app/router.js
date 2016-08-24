@@ -32,4 +32,7 @@ router.route('/snaps')
 router.post('/signin', requireSignin, UserController.signin);
 router.post('/signup', UserController.signup);
 
+router.post('/auth/facebook', UserController.authenticateWithFacebook);
+
+
 export default router;
