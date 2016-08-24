@@ -17,6 +17,9 @@ router.route('/profile')
   .put(requireAuth, UserController.updateUserProfile)
   .get(requireAuth, UserController.getUserObject);
 
+router.route('/friends')
+  .put(requireAuth, UserController.addFriend);
+
 router.route('/user')
   .get(UserController.checkUserExists)
   .delete(requireAuth, UserController.deleteUser);

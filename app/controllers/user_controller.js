@@ -13,6 +13,18 @@ export const signin = (req, res, next) => {
   res.send({ token: tokenForUser(req.user) });
 };
 
+export const addFriend = (req, res) => {
+  console.log('REQ BODY', req.body);
+  User.findOneAndUpdate({ _id: req.user._id }, {
+    friends: req.body.friends,
+  }).then(() => {
+    res.send({ message: 'Successfully updated post!' });
+  })
+  .catch(error => {
+    res.json({ error });
+  });
+};
+
 export const deleteUser = (req, res) => {
   console.log('DELETE USER ID', req.user._id);
   User.remove({ _id: req.user._id })
