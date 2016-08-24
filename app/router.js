@@ -10,21 +10,19 @@ router.get('/', (req, res) => {
 });
 
 router.route('/snaps/:id')
-  .get(requireAuth, Snaps.getSnap)
-  .delete(requireAuth, Snaps.deleteSnap);
+  .get(Snaps.getSnap)
+  .delete(Snaps.deleteSnap);
 
 router.route('/profile')
   .get(requireAuth, UserController.getUserObject);
 
-router.route('/user')
-  .get(UserController.checkUserExists);
-
-
 router.route('/snaps')
-  .post(requireAuth, Snaps.createSnap)
+  .post(Snaps.createSnap)
   .get(requireAuth, Snaps.getSnaps);
 
 router.post('/signin', requireSignin, UserController.signin);
 router.post('/signup', UserController.signup);
+
+router.post('/auth/facebook', UserController.authenticateWithFacebook);
 
 export default router;

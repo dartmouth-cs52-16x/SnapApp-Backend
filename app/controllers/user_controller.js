@@ -31,6 +31,8 @@ export const checkUserExists = (req, res) => {
 };
 
 export const getUserObject = (req, res) => {
+  console.log('~~~~~REQUEST USER ~~~~~~');
+  console.log(req.user);
   res.send(req.user);
 };
 
@@ -83,4 +85,51 @@ export const signup = (req, res, next) => { // eslint-disable-line consistent-re
   .catch(err => {
     res.status(400).send(`${err}`);
   });
+};
+
+
+export const authenticateWithFacebook = (req, res) => {
+  console.log(req.body);
+  const facebookUserID = req.body.facebookUserID;
+  const facebookUserName = req.body.facebookUserName;
+  const facebookUserPicture = req.body.facebookUserPicture;
+  console.log(`req ID: ${facebookUserID}`);
+  console.log(`req ID: ${facebookUserName}`);
+  console.log(`req ID: ${facebookUserPicture}`);
+
+  User.findOne({ facebookUserID })
+  .then((user) => { // eslint-disable-line consistent-return
+    if (user) {
+      console.log('user found. signing in with facebook');
+      console.log(user);
+      res.send({ token: tokenForUser(user) });
+    }
+    else { // eslint-disable-line brace-style
+      console.log('no user found. making new user with fb data');
+      const newUser = new User();
+      newUser.facebookUserID = facebookUserID;
+      newUser.email = 'NONE';
+      newUser.password = 'NONE';
+      newUser.username = facebookUserName;
+      newUser.profilePictureURL = facebookUserPicture;
+      newUser.snapScore = 0;
+      newUser.topFriend = 'NONE';
+      newUser.friends = [];
+      newUser.groups = [[]];
+      newUser.save()
+          .then((result) => {
+            console.log(result);
+            console.log('token saved as: ');
+            console.log({ token: tokenForUser(result) });
+            res.send({ token: tokenForUser(result) });
+          })
+          .catch(err => {
+            res.status(400).send(`${err}`);
+          });
+    }
+  }
+    )
+      .catch(err => {
+        res.status(400).send(`${err}`);
+      });
 };

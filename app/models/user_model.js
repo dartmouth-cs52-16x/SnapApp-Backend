@@ -11,6 +11,8 @@ const UserSchema = new Schema({
   friends: [{ name: String, score: Number }],
   topFriend: String,
   snapScore: Number,
+  facebookUserID: String,
+  profilePictureURL: String,
 });
 
 UserSchema.set('toJSON', {
