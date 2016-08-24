@@ -14,39 +14,16 @@ const AWS = require('aws-sdk');
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
-    return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
+    return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time };
   });
 };
 
 const cleanSnap = (snap) => {
-  return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo };
+  return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time };
 };
 
 
 export const createSnap = (req, res) => {
-  // let userExists = 0;
-  // //  check if user exists
-  // User.findOne({ username: req.body.sentTo })
-  //   .then((user) => {
-  //     if (user) {
-  //       res.json({ success: 'user exists' });
-  //       if (user.username) {
-  //         res.send({ success: 'USER EXISTS' });
-  //         userExists = 1;
-  //       } else {
-  //         res.send({ error: 'USER DOESN\'T EXIST' });
-  //       }
-  //     }
-  //   }).catch((error) => {
-  //     res.json({ error });
-  //     res.send({ error: 'call failed' });
-  //   });
-  //
-  // if (userExists) {
-  //   console.log('user exists');
-  // }
-
-
   //  update users snap score for every snap sent
   const dict = req.user.friends;
   console.log(dict);
@@ -115,38 +92,6 @@ export const createSnap = (req, res) => {
     }).catch((error) => {
       res.json({ error });
     });
-
-  // s3bucket.createBucket(() => {
-  //   const params = { Key: 'new', Body: 'HIIIII!' };
-  //   s3bucket.upload(params, (err, data) => {
-  //     if (err) {
-  //       console.log('Error uploading data: ', err);
-  //     } else {
-  //       console.log('Successfully uploaded data to myBucket/myKey');
-  //     }
-  //   });
-  // });
-
-  // s3obj.upload({ Body: body }).
-  //   on('httpUploadProgress', (evt) => {
-  //     console.log(evt);
-  //   }).
-  //   send((err, data) => {
-  //     console.log(err, data);
-  //   });
-
-  // const params = { Bucket: 'bucket', Key: 'key' };
-  // const s3 = new AWS.S3();
-  // s3.abortMultipartUpload(params, (err, data) => {
-  //   if (err) console.log(err, err.stack); // an error occurred
-  //   else console.log(data);           // successful response
-  // });
-  // const url = s3.getSignedUrl('getObject', params);
-  // console.log('The URL is', url);
-  // const paramss = { Bucket: 'bucket', Key: 'key', Body: req.body.file };
-  // s3.upload(paramss, (err, data) => {
-  //   console.log(err, data);
-  // });
 };
 
 export const getSnaps = (req, res) => {
@@ -196,7 +141,8 @@ export const getSnap = (req, res) => {
           Snap.findById({ _id: req.params.id })
             .then((oneSnap) => {
               res.json(cleanSnap(oneSnap));
-              console.log('Returned snap with new URL');
+              console.log('\n\nReturned snap with new URL');
+              console.log(cleanSnap(oneSnap));
             })
           .catch(error => {
             res.json({ error });
@@ -210,31 +156,4 @@ export const getSnap = (req, res) => {
   .catch(error => {
     res.json({ error });
   });
-
-  //
-  //
-  // var paramsTwo = { Bucket: 'snap-app-bucket', Key: key }; //eslint-disable-line
-  // s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
-  //   newURL = Url;
-  //   console.log('\n\nThe new Signed URL is', Url);
-  // });
-  //
-  // Snap.findOneAndUpdate({ _id: req.params.id }, {
-  //   pictureURL: newURL,
-  //   friend: ['asdf', 'asdfasdf'],
-  // }).then(() => {
-  //   res.send({ message: 'Successfully updated post!' });
-  // })
-  // .catch(error => {
-  //   res.json({ error });
-  // });
-
-
-  // Snap.findById({ _id: req.params.id })
-  //   .then(snap => {
-  //     res.json(cleanSnap(snap));
-  //   })
-  // .catch(error => {
-  //   res.json({ error });
-  // });
 };

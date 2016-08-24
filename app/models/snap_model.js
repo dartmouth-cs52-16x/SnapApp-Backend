@@ -5,7 +5,7 @@ const SnapSchema = new Schema({
   pictureURL: String,
   sentFrom: String,
   sentTo: String,
-  time: Date,
+  time: { type: Date, default: Date.now },
   timer: Number,
   key: String,
   caption: String,
