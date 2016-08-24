@@ -15,7 +15,7 @@ export const signin = (req, res, next) => {
 
 //  need body, email, username, id, file
 export const updateUserProfile = (req, res) => {
-  console.log('UPDATE REQ:', req.body);
+  // console.log('UPDATE REQ:', req.body);
 
   const x = Math.floor((Math.random() * 100000) + 1);
   const key = x.toString();
@@ -70,8 +70,41 @@ export const checkUserExists = (req, res) => {
     });
 };
 
+
 export const getUserObject = (req, res) => {
-  res.send(req.user);
+  const reqUser = req.user;
+  var s3 = new AWS.S3();//eslint-disable-line
+
+  User.findById({ _id: reqUser._id })
+    .then(user => {
+      if (user.profilePicKey !== '') {
+        var paramsTwo = { Bucket: 'snap-app-bucket', Key: user.profilePicKey }; //eslint-disable-line
+        s3.getSignedUrl('getObject', paramsTwo, (err, Url) => {
+          console.log('\n\nThe new Signed URL is', Url);
+          User.findOneAndUpdate({ _id: reqUser._id }, {
+            profilePicURL: Url,
+          }).then(() => {
+            console.log('Updated Snaps URL');
+            User.findById({ _id: reqUser._id })
+              .then((userToReturn) => {
+                console.log('\n\nUSER TO RETURN', userToReturn);
+                res.send(userToReturn);
+              })
+            .catch(error => {
+              res.json({ error });
+            });
+          })
+          .catch(error => {
+            res.json({ error });
+          });
+        });
+      } else {
+        res.send(reqUser);
+      }
+    })
+  .catch(error => {
+    res.json({ error });
+  });
 };
 
 // encodes a new token for a user object
