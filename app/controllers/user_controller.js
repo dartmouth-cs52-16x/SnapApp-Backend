@@ -205,11 +205,10 @@ export const authenticateWithFacebook = (req, res) => {
       newUser.email = 'NONE';
       newUser.password = 'NONE';
       newUser.username = facebookUserName;
-      newUser.profilePictureURL = facebookUserPicture;
+      newUser.profilePicURL = facebookUserPicture;
       newUser.snapScore = 0;
       newUser.topFriend = 'NONE';
       newUser.friends = [];
-      newUser.groups = [[]];
       newUser.save()
           .then((result) => {
             console.log(result);
