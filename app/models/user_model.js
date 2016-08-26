@@ -14,7 +14,7 @@ const UserSchema = new Schema({
   topFriend: String,
   snapScore: Number,
   facebookUserID: String,
-  profilePictureURL: String,
+  fbProfPicURL: String,
 });
 
 UserSchema.set('toJSON', {

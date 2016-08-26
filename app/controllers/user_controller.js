@@ -207,7 +207,7 @@ export const authenticateWithFacebook = (req, res) => {
      newUser.email = facebookEmail;
      newUser.password = 'NONE';
      newUser.username = facebookUserName;
-     newUser.profilePictureURL = facebookUserPicture;
+     newUser.fbProfPicURL = facebookUserPicture;
      newUser.snapScore = 0;
      newUser.topFriend = 'NONE';
      newUser.friends = [];
