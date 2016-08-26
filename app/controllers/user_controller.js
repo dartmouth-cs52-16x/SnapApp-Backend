@@ -186,9 +186,11 @@ export const authenticateWithFacebook = (req, res) => {
   console.log(req.body);
   const facebookUserID = req.body.facebookUserID;
   const facebookUserName = req.body.facebookUserName;
+  const facebookEmail = req.body.facebookEmail;
   const facebookUserPicture = req.body.facebookUserPicture;
   console.log(`req ID: ${facebookUserID}`);
   console.log(`req ID: ${facebookUserName}`);
+  console.log(`req ID: ${facebookEmail}`);
   console.log(`req ID: ${facebookUserPicture}`);
 
   User.findOne({ facebookUserID })
@@ -202,10 +204,10 @@ export const authenticateWithFacebook = (req, res) => {
      console.log('no user found. making new user with fb data');
      const newUser = new User();
      newUser.facebookUserID = facebookUserID;
-     newUser.email = 'NONE';
+     newUser.email = facebookEmail;
      newUser.password = 'NONE';
      newUser.username = facebookUserName;
-     newUser.profilePicURL = facebookUserPicture;
+     newUser.profilePictureURL = facebookUserPicture;
      newUser.snapScore = 0;
      newUser.topFriend = 'NONE';
      newUser.friends = [];
