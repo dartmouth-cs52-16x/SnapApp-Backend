@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt-nodejs';
 const UserSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
+  profilePicURL: String,
+  profilePicKey: String,
   username: String,
   friends: [{ name: String, score: Number }],
   topFriend: String,
