@@ -1,4 +1,6 @@
-//  Sources: http://stackoverflow.com/questions/27732209/turning-off-eslint-rule-for-a-specific-line
+//  Sources:
+//  http://stackoverflow.com/questions/27732209/turning-off-eslint-rule-for-a-specific-line
+//  http://cs52.me/assignments/hw5p2/
 
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';

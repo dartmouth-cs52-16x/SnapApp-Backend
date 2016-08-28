@@ -1,9 +1,13 @@
-//  Sources: http://mongoosejs.com/docs/queries.html
+//  Sources:
+//  http://mongoosejs.com/docs/queries.html
+//  http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html
+
+
+//  We currently are not using fb auth
 
 import User from '../models/user_model';
 import jwt from 'jwt-simple';
 const AWS = require('aws-sdk');
-// import config from '../config';
 import dotenv from 'dotenv';
 dotenv.config({ silent: true });
 

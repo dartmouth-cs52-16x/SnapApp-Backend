@@ -1,9 +1,5 @@
-//  SAMPLE CURL CREATE SNAP
-// curl -X POST -H "Content-Type: application/json" -d '{
-//     "pictureURL": "first post",
-//     "sentFrom": "words",
-//     "sentTo":  "this is a test post"
-// }' "http://localhost:9090/api/snaps"
+//  Sources:
+//  http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html for AWS S3 calls
 
 import User from '../models/user_model.js';
 import Snap from '../models/snap_model.js';
@@ -107,7 +103,23 @@ export const getSnaps = (req, res) => {
 };
 
 export const deleteSnap = (req, res) => {
-  res.send('snaps deleted here');
+  Snap.find({ sentTo: req.user.username })
+    .then((snap) => {
+      const s3 = new AWS.S3();//eslint-disable-line
+
+      const params = {
+        Bucket: 'snap-app-bucket', /* required */
+        Key: snap.key, /* required */
+      };
+      s3.deleteObject(params, (err, data) => {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log(data);           // successful response
+      });
+    })
+    .catch((error) => {
+      res.json({ error });
+    });
+
   Snap.remove({ _id: req.params.id })
     .then(() => {
       res.json({ message: 'Snap Deleted' });

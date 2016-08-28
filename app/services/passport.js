@@ -1,3 +1,5 @@
+//  Sources: http://cs52.me/assignments/hw5p2/
+
 // lets import some stuff
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
