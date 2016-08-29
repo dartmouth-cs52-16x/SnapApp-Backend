@@ -44,7 +44,7 @@ export const deleteUser = (req, res) => {
 export const updateUserProfile = (req, res) => {
  // console.log('UPDATE REQ:', req.body);
 
-  const x = Math.floor((Math.random() * 100000) + 1);
+  const x = Math.floor((Math.random() * 10000000) + 1);
   const key = x.toString();
 
   console.log('KEY GENERATED', key);

@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
 router.route('/snaps/:id')
   .get(requireAuth, Snaps.getSnap)
-  .delete(requireAuth, Snaps.deleteSnap);
+  .put(requireAuth, Snaps.deleteSnap);
 
 router.route('/profile')
   .put(requireAuth, UserController.updateUserProfile)

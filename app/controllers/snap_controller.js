@@ -3,19 +3,17 @@
 
 import User from '../models/user_model.js';
 import Snap from '../models/snap_model.js';
-// import fs from 'file-system';
-const fs = require('fs');
 const AWS = require('aws-sdk');
 
 
 const cleanSnaps = (snaps) => {
   return snaps.map(snap => {
-    return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time };
+    return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time, key: snap.key };
   });
 };
 
 const cleanSnap = (snap) => {
-  return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time };
+  return { id: snap._id, timer: snap.timer, caption: snap.caption, pictureURL: snap.pictureURL, sentFrom: snap.sentFrom, sentTo: snap.sentTo, time: snap.time, key: snap.key };
 };
 
 
@@ -55,7 +53,7 @@ export const createSnap = (req, res) => {
 
   const snap = new Snap();
 
-  const x = Math.floor((Math.random() * 10000) + 1);
+  const x = Math.floor((Math.random() * 1000000) + 1);
   snap.key = x.toString();
 
   const s3bucket = new AWS.S3({ params: { Bucket: 'snap-app-bucket' } });
@@ -103,22 +101,19 @@ export const getSnaps = (req, res) => {
 };
 
 export const deleteSnap = (req, res) => {
-  Snap.find({ sentTo: req.user.username })
-    .then((snap) => {
-      const s3 = new AWS.S3();//eslint-disable-line
+  console.log('BODY REQ LOG', req.body.snap);
 
-      const params = {
-        Bucket: 'snap-app-bucket', /* required */
-        Key: snap.key, /* required */
-      };
-      s3.deleteObject(params, (err, data) => {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
-      });
-    })
-    .catch((error) => {
-      res.json({ error });
-    });
+  const key = req.body.snap.key;
+  const s3 = new AWS.S3();//eslint-disable-line
+
+  const params = {
+    Bucket: 'snap-app-bucket',
+    Key: key,
+  };
+  s3.deleteObject(params, (err, data) => {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
 
   Snap.remove({ _id: req.params.id })
     .then(() => {
@@ -127,12 +122,6 @@ export const deleteSnap = (req, res) => {
     .catch((error) => {
       res.json({ error });
     });
-};
-
-export const storeImage = (req, res) => {
-  const snap = new Snap();
-  snap.img.data = fs.readFileSync(req);
-  snap.img.contentType = 'image/jpeg';
 };
 
 export const getSnap = (req, res) => {
